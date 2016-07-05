@@ -3,11 +3,15 @@ package daoImpl;
 import dao.UserProductDao;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import tables.Product;
 import tables.User;
 import tables.UserProduct;
-import util.HibernateUtil;
+//import util.HibernateUtil;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -15,14 +19,25 @@ import java.util.List;
 /**
  * Created by nikita on 03.06.16.
  */
+@Repository(value = "userProduct")
+@Transactional
 public class UserProductImpl implements UserProductDao {
+
+    private SessionFactory sessionFactory;
+
+    @Autowired
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
     public UserProduct getUserProduct(int userProdId) throws SQLException {
         UserProduct userProducts = null;
         Session session = null;
         try {
-            session = HibernateUtil.getSessionFactory().openSession();
+            //session = HibernateUtil.getSessionFactory().openSession();
+            session = sessionFactory.openSession();
             session.beginTransaction();
-            userProducts = session.get(UserProduct.class, userProdId);
+            userProducts = (UserProduct) session.get(UserProduct.class, userProdId);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -38,7 +53,8 @@ public class UserProductImpl implements UserProductDao {
     public void editUserProduct(UserProduct userProduct) throws SQLException {
         Session session = null;
         try {
-            session = HibernateUtil.getSessionFactory().openSession();
+            //session = HibernateUtil.getSessionFactory().openSession();
+            session = sessionFactory.openSession();
             session.beginTransaction();
             session.update(userProduct);
             session.getTransaction().commit();
@@ -56,7 +72,8 @@ public class UserProductImpl implements UserProductDao {
     public void deleteUserProduct(UserProduct userProduct) throws SQLException {
         Session session = null;
         try {
-            session = HibernateUtil.getSessionFactory().openSession();
+            //session = HibernateUtil.getSessionFactory().openSession();
+            session = sessionFactory.openSession();
             session.beginTransaction();
             session.delete(userProduct);
             session.getTransaction().commit();
@@ -75,7 +92,8 @@ public class UserProductImpl implements UserProductDao {
         List<UserProduct> userProducts = null;
         Session session = null;
         try {
-            session = HibernateUtil.getSessionFactory().openSession();
+            //session = HibernateUtil.getSessionFactory().openSession();
+            session = sessionFactory.openSession();
             session.beginTransaction();
             userProducts = session.createCriteria(UserProduct.class).list();
         } catch (Exception e) {
@@ -94,7 +112,8 @@ public class UserProductImpl implements UserProductDao {
         Session session = null;
         UserProduct userProduct = null;
         try {
-            session = HibernateUtil.getSessionFactory().openSession();
+            //session = HibernateUtil.getSessionFactory().openSession();
+            session = sessionFactory.openSession();
             session.beginTransaction();
             Criteria criteria = session.createCriteria(UserProduct.class)
                     .add(Restrictions.like("user", user))
@@ -114,7 +133,8 @@ public class UserProductImpl implements UserProductDao {
         List<UserProduct> userProducts = null;
         Session session = null;
         try {
-            session = HibernateUtil.getSessionFactory().openSession();
+            //session = HibernateUtil.getSessionFactory().openSession();
+            session = sessionFactory.openSession();
             session.beginTransaction();
             Criteria criteria = session.createCriteria(UserProduct.class).add(Restrictions.like("user", user));
             userProducts = criteria.list();

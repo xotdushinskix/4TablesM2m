@@ -4,7 +4,9 @@ import dao.OrderDao;
 import dao.ProductDao;
 import dao.UserDao;
 import dao.UserProductDao;
-import factory.Factory;
+//import factory.Factory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import tables.Order;
 import tables.Product;
 import tables.User;
@@ -19,24 +21,86 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) throws SQLException {
-        HibernateUtil.getSessionFactory();
 
-        Factory factory = Factory.getInstance();
-        UserDao userDao = factory.getUserDao();
-        ProductDao productDao = factory.getProductDao();
-        OrderDao orderDao = factory.getOrderDao();
-        UserProductDao userProductDao = factory.getUserProductDao();
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("spring.xml");
+        UserDao userDao = applicationContext.getBean("userDao", UserDao.class);
+        ProductDao productDao = applicationContext.getBean("productDao", ProductDao.class);
+        UserProductDao userProductDao = applicationContext.getBean("userProduct", UserProductDao.class);
+//
+////        User user = userDao.getUserById(4);
+////        user.setLoginEmail("logmail@logmail.com");
+////        userDao.editUser(user);
+//
+//
+//
+        User user = userDao.getUserById(3);
+        Product product = productDao.getProducById(3);
+
+//        System.out.println(user.getLoginEmail());
+//        System.out.println(product.getMpn());
+
+        UserProduct userProduct = new UserProduct();
+        userProduct.setUser(user);
+        userProduct.setProduct(product);
+        userProduct.setBoughtQuantity(777);
+
+        user.getUserProducts().add(userProduct);
+        product.getUserProducts().add(userProduct);
+
+        userDao.editUser(user);
+        productDao.editProduct(product);
 
 
-        User user = userDao.getUserById(1);
-        List<UserProduct>userProducts = userProductDao.getAllUserProdByUser(user);
-        Order order = new Order();
-        order.setUserProducts(userProducts);
-        orderDao.addOrder(order);
-        for (UserProduct userProduct : userProducts) {
-            userProduct.setOrder(order);
-            userProductDao.editUserProduct(userProduct);
-        }
+
+
+
+
+
+//        User user = userDao.getUserById(1);
+//        System.out.println(user.getFirstName());
+
+//        List<User> users = userDao.getAllUsers();
+//        for (User user : users) {
+//            System.out.println(user.getFirstName() + " " + user.getLastName());
+//        }
+
+
+//        HibernateUtil.getSessionFactory();
+//
+//        Factory factory = Factory.getInstance();
+//        UserDao userDao = factory.getUserDao();
+//        ProductDao productDao = factory.getProductDao();
+//        OrderDao orderDao = factory.getOrderDao();
+//        UserProductDao userProductDao = factory.getUserProductDao();
+//
+//        User user = userDao.getUserById(3);
+//        Product product = productDao.getProducById(3);
+//
+////        System.out.println(user.getLoginEmail());
+////        System.out.println(product.getMpn());
+//
+//        UserProduct userProduct = new UserProduct();
+//        userProduct.setUser(user);
+//        userProduct.setProduct(product);
+//        userProduct.setBoughtQuantity(777);
+//
+//        user.getUserProducts().add(userProduct);
+//        product.getUserProducts().add(userProduct);
+//
+//        userDao.editUser(user);
+//        productDao.editProduct(product);
+
+//
+//
+//        User user = userDao.getUserById(1);
+//        List<UserProduct>userProducts = userProductDao.getAllUserProdByUser(user);
+//        Order order = new Order();
+//        order.setUserProducts(userProducts);
+//        orderDao.addOrder(order);
+//        for (UserProduct userProduct : userProducts) {
+//            userProduct.setOrder(order);
+//            userProductDao.editUserProduct(userProduct);
+//        }
 
 
 

@@ -28,7 +28,7 @@ public class Product {
     @Column(name = "stock")
     private int stock;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<UserProduct> userProducts = new ArrayList<UserProduct>();
 
     public Product() {
